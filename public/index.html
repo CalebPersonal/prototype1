@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trench Book Viewer</title>
+
+  <!-- ✅ This links your external CSS file -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <h1>Trench Book Viewer</h1>
+  <label for="trenchBookSelect">Choose a Book:</label>
+  <select id="trenchBookSelect">
+    <option value="">-- Choose a Book --</option>
+    <option value="Trench-Book-CT-III">Trench-Book-CT-III</option>
+    <option value="Trench-Book-AB-I">Trench-Book-AB-I</option>
+    <option value="Trench-Book-AC-I">Trench-Book-AC-I</option>
+  </select>
+
+  <div id="imageViewer">
+    <button id="prevBtn">◀</button>
+    <img id="currentImage" src="" alt="" />
+    <button id="nextBtn">▶</button>
+  </div>
+
+  <div id="imagesContainer"></div>
+
+  <script src="main.js"></script>
+</body>
+</html>
