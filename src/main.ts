@@ -8,7 +8,7 @@ async function bootstrap() {
 
   app.useStaticAssets(join(__dirname, '..', 'public'));
 
-  app.enableCors();
+  // app.enableCors();
 
   await app.listen(3000, '0.0.0.0');
   const server = app.getHttpServer();
