@@ -8,28 +8,29 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <h1>Trench Book Viewer</h1>
-  <label for="trenchBookSelect">Choose a Book:</label>
-  <select id="trenchBookSelect">
-    <option value="">-- Choose a Book --</option>
-    <option value="Trench-Book-CT-III">Trench-Book-CT-III</option>
-    <option value="Trench-Book-AB-I">Trench-Book-AB-I</option>
-    <option value="Trench-Book-AC-I">Trench-Book-AC-I</option>
-    <option value="Trench-Book-GD-I">Trench-Book-GD-I</option>
-  </select>
+  <div class="content">
+    <h1>Trench Book Viewer</h1>
+    <label for="trenchBookSelect">Choose a Book:</label>
+    <select id="trenchBookSelect">
+      <option value="">-- Choose a Book --</option>
+      <option value="Trench-Book-CT-III">Trench-Book-CT-III</option>
+      <option value="Trench-Book-AB-I">Trench-Book-AB-I</option>
+      <option value="Trench-Book-AC-I">Trench-Book-AC-I</option>
+      <option value="Trench-Book-GD-I">Trench-Book-GD-I</option>
+    </select>
 
-  <div id="imageViewer">
-    <button id="fullscreenBtn" title="Fullscreen">⛶</button>
-    <button id="prevBtn">◀</button>
-    <!-- Show a default image when no book is selected -->
-    <img id="currentImage" src="default.jpg" alt="No book selected" />
-    <button id="nextBtn">▶</button>
-    <!-- Page slider for quick navigation -->
-    <input type="range" id="pageSlider" min="1" value="1" disabled style="width: 90%; margin: 20px 5%;" />
+    <div id="imageViewer">
+      <button id="fullscreenBtn" title="Fullscreen">⛶</button>
+      <button id="prevBtn">◀</button>
+      <!-- Show a default image when no book is selected -->
+      <img id="currentImage" src="images/default.jpg" alt="No book selected" />
+      <button id="nextBtn">▶</button>
+      <!-- Page slider for quick navigation -->
+      <input type="range" id="pageSlider" min="1" value="1" disabled style="width: 90%; margin: 20px 5%;" />
+    </div>
+
+    <div id="imagesContainer"></div>
   </div>
-
-  <div id="imagesContainer"></div>
-
   <script src="main.js"></script>
 </body>
 </html>
