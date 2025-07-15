@@ -1,3 +1,5 @@
+/*
+| Main body styling: sets background, removes default margin, adds padding, and sets font. */
 body {
   background-color: #f0f4f8; /* soft pastel blue/gray */
   margin: 0;
@@ -5,6 +7,8 @@ body {
   font-family: sans-serif;
 }
 
+/*
+| Main heading style: centered, large, and colored. */
 h1 {
   text-align: center;
   font-size: 2.5rem;
@@ -12,6 +16,8 @@ h1 {
   margin-bottom: 20px;
 }
 
+/*
+| Label styling: centered, slightly larger, and spaced. */
 label {
   display: block;
   text-align: center;
@@ -20,6 +26,8 @@ label {
   color: #444;
 }
 
+/*
+| Fullscreen mode for image viewer: takes up entire viewport, centers image, black background. */
 #imageViewer:fullscreen {
   width: 100vw;
   height: 100vh;
@@ -32,6 +40,8 @@ label {
   justify-content: center;
 }
 
+/*
+| Image styling in fullscreen: fills height, no border or shadow, keeps aspect ratio. */
 #imageViewer:fullscreen img {
   width: auto;
   height: 100%;
@@ -42,10 +52,14 @@ label {
   box-shadow: none;
 }
 
+/*
+| Ensures buttons are above the image in fullscreen. */
 #imageViewer:fullscreen button {
   z-index: 20;
 }
 
+/*
+| Fullscreen button: round, top-right, pastel color, shadow, interactive. */
 #fullscreenBtn {
   position: absolute;
   top: 10px;
@@ -62,11 +76,15 @@ label {
   transition: background 0.3s ease, transform 0.2s ease;
 }
 
+/*
+| Fullscreen button hover effect: color and scale. */
 #fullscreenBtn:hover {
   background: #a8cbdc; /* darker pastel blue */
   transform: scale(1.1);
 }
 
+/*
+| Dropdown for selecting trench book: centered, padded, rounded, subtle shadow. */
 #trenchBookSelect {
   display: block;
   margin: 0 auto 30px;
@@ -79,18 +97,24 @@ label {
   transition: border 0.2s ease;
 }
 
+/*
+| Focus style for dropdown: blue border and glow. */
 #trenchBookSelect:focus {
   outline: none;
   border-color: #a8cbdc;
   box-shadow: 0 0 5px rgba(168, 203, 220, 0.5);
 }
 
+/*
+| (If used) Focus style for another dropdown. */
 #bookSelect:focus {
   outline: none;
   border-color: #a8cbdc;
   box-shadow: 0 0 5px rgba(168, 203, 220, 0.5);
 }
 
+/*
+| Main image viewer container: centered, pastel background, rounded, shadow, disables text selection. */
 #imageViewer {
   max-width: 650px;
   margin: 40px auto;
@@ -102,7 +126,8 @@ label {
   user-select: none;
 }
 
-/* Position buttons absolutely on left and right, centered vertically */
+/*
+| Previous/Next navigation buttons: absolutely positioned, round, pastel, shadow, interactive. */
 #prevBtn,
 #nextBtn {
   position: absolute;
@@ -121,20 +146,28 @@ label {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
+/*
+| Previous button: left side. */
 #prevBtn {
   left: -20px;
 }
 
+/*
+| Next button: right side. */
 #nextBtn {
   right: -20px;
 }
 
+/*
+| Navigation button hover: color and scale up. */
 #prevBtn:hover,
 #nextBtn:hover {
   background: #a8cbdc; /* slightly darker pastel */
   transform: translateY(-50%) scale(1.1);
 }
 
+/*
+| Main displayed image: fills container, rounded, shadow, keeps aspect ratio. */
 #currentImage {
   display: block;
   width: 100%;
