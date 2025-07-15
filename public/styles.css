@@ -1,3 +1,49 @@
+body {
+  background-color: #f0f4f8; /* soft pastel blue/gray */
+  margin: 0;
+  padding: 40px 0;
+  font-family: sans-serif;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #5c5470; /* soft purple-gray */
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+#trenchBookSelect {
+  display: block;
+  margin: 0 auto 30px;
+  padding: 10px 14px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: border 0.2s ease;
+}
+
+#trenchBookSelect:focus {
+  outline: none;
+  border-color: #a8cbdc;
+  box-shadow: 0 0 5px rgba(168, 203, 220, 0.5);
+}
+
+#bookSelect:focus {
+  outline: none;
+  border-color: #a8cbdc;
+  box-shadow: 0 0 5px rgba(168, 203, 220, 0.5);
+}
+
 #imageViewer {
   max-width: 650px;
   margin: 40px auto;
