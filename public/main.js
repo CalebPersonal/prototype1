@@ -7,8 +7,11 @@ const apiBase = 'http://192.168.0.133:3000'; // Mag IP
 const select = document.getElementById('trenchBookSelect');
 const imagesContainer = document.getElementById('imagesContainer');
 const currentImage = document.getElementById('currentImage');
+
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
+// Add reference to the slider (will be added to HTML)
+const pageSlider = document.getElementById('pageSlider');
 
 let images = [];
 let currentIndex = 0;
@@ -23,6 +26,11 @@ function showImage(index) {
   const filename = images[currentIndex];
   currentImage.src = `${apiBase}/trench-books/${selected}/${filename}`;
   currentImage.alt = filename;
+
+  // Update slider position
+  if (images.length > 0 && pageSlider) {
+    pageSlider.value = currentIndex + 1;
+  }
 }
 
 prevBtn.addEventListener('click', () => {
@@ -40,7 +48,12 @@ select.addEventListener('change', async (e) => {
   // Show default image when no book is selected
   currentImage.src = 'default.jpg';
   currentImage.alt = 'No book selected';
-  imagesContainer.innerHTML = ''; // Clear any grid images
+  imagesContainer.innerHTML = '';
+  if (pageSlider) {
+    pageSlider.disabled = true;
+    pageSlider.value = 1;
+    pageSlider.max = 1;
+  }
 
   if (!selected) return;
 
@@ -64,16 +77,39 @@ select.addEventListener('change', async (e) => {
     if (images.length === 0) {
       imagesContainer.textContent = 'No images found for this book.';
       currentImage.src = '';
+      if (pageSlider) {
+        pageSlider.disabled = true;
+        pageSlider.value = 1;
+        pageSlider.max = 1;
+      }
       return;
     }
 
+    // Enable and set up the slider
+    if (pageSlider) {
+      pageSlider.max = images.length;
+      pageSlider.value = 1;
+      pageSlider.disabled = false;
+    }
     // Show first image
     showImage(0);
   } catch (error) {
     console.error('Error:', error);
     imagesContainer.textContent = '⚠️ Failed to load images. Please try again.';
+    if (pageSlider) {
+      pageSlider.disabled = true;
+      pageSlider.value = 1;
+      pageSlider.max = 1;
+    }
   }
 });
+// Handle slider input to jump to a page
+if (pageSlider) {
+  pageSlider.addEventListener('input', (e) => {
+    const idx = parseInt(e.target.value, 10) - 1;
+    showImage(idx);
+  });
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   const imageViewer = document.getElementById('imageViewer');
