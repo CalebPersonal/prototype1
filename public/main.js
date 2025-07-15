@@ -38,7 +38,7 @@ select.addEventListener('change', async (e) => {
   images = [];
   currentIndex = 0;
   // Show default image when no book is selected
-  currentImage.src = 'default.svg';
+  currentImage.src = 'default.jpg';
   currentImage.alt = 'No book selected';
   imagesContainer.innerHTML = ''; // Clear any grid images
 
