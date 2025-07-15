@@ -73,6 +73,21 @@ select.addEventListener('change', async (e) => {
   }
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+  const imageViewer = document.getElementById('imageViewer');
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+  fullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      imageViewer.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enter fullscreen: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  });
+});
+
 // --- Swipe support ---
 let touchStartX = 0;
 let touchEndX = 0;
