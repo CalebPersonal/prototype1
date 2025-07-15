@@ -1,216 +1,169 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+const fs = require('fs/promises');
+const path = require('path');
+const axios = require('axios');
 
-// Node.js ES module hack to get __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// Starting URL
+let url = 'https://opencontext.org/media/6ee89e00-d436-440e-6a8c-d488a1776991.json';
 
-// Headers used to identify the client and accept JSON response
+// Headers
 const headers = {
   'User-Agent': 'oc-api-client',
-  'Accept': 'application/json'
+  'Accept': 'application/json',
 };
 
-// Initial URL to start crawling from
-let url = 'https://opencontext.org/media/017ca5a0-3616-4fdc-e70a-837f5dc441b6.json';
-
-// Object to store all results before writing to JSON file
-let results = {};
-
-// Counter to track page numbers
 let count = 0;
+const results = {};
+const visitedUrls = new Set();
 
-// Main crawling loop: continues while there is a URL to fetch
-while (url) {
-  console.log(count);
-  count++;
+function labelFinder(label) {
+  if (typeof label !== 'string' || !label.trim()) return null;
 
-  // Fetch the current page JSON data
-  const res = await fetch(url, { headers });
-  const obj = await res.json();
+  let cleaned = label.replace(/[^a-zA-Z0-9 :,-]+/g, '');
+  cleaned = cleaned.replace(/,?\s*insert\s*\d*$/i, '');
+  cleaned = cleaned.replace(/:\d+(-\d+)?$/, '');
+  cleaned = cleaned.trim();
+  return cleaned || null;
+}
 
-  /**
-   * Extracts and cleans the trench book label from the current JSON object.
-   * Removes non-letter/space characters and trailing 'insert'.
-   * @returns {string|null} Cleaned label string or null if no label.
-   */
-  function label_finder() {
-    if (typeof obj.label === 'string' && obj.label.trim()) {
-      const cleaned = obj.label
-        .replace(/[^a-zA-Z ]+/g, '')    // Remove non-letters/spaces
-        .replace(/\binsert\b$/i, '')    // Remove trailing "insert"
-        .trim();                        // Trim remaining whitespace
+function authorFinder(label) {
+  if (!label) return null;
+  const cleaned = label.replace(/[^a-zA-Z ]+/g, '').trim();
+  const match = cleaned.match(/Trench Book\s+([A-Z]+)\s+(I|II|III|IV|V|VI|VII|VIII|IX|X)\b/);
+  return match ? match[1] : null;
+}
 
-      return cleaned.length > 0 ? cleaned : null;
-    }
-    return null;
+function yearFinder(obj) {
+  const ctxs = obj['oc-gen:has-linked-contexts'] || [];
+  if (ctxs.length > 5) {
+    const raw = ctxs[5]?.slug || '';
+    const match = raw.match(/\d{2}-(\d{4})-/);
+    return match ? match[1] : null;
   }
+  return null;
+}
 
-  /**
-   * Extracts the author initials from the label.
-   * Matches initials between 'Trench Book' and Roman numeral.
-   * @returns {string|null} Author initials or null if no match.
-   */
-  function author_finder() {
-    if (obj.label) {
-      const cleaned = obj.label.replace(/[^a-zA-Z ]+/g, '').trim();
-      const match = cleaned.match(/Trench Book\s+([A-Z]+)\s+(I|II|III|IV|V|VI|VII|VIII|IX|X)\b/);
-      return match ? match[1] : null;
+function jpgFinder(obj) {
+  const files = obj['oc-gen:has-files'] || [];
+  return files[0]?.id || null;
+}
+
+async function jpgDownloader(obj, count, baseDir) {
+  const jpgUrl = jpgFinder(obj);
+  const label = labelFinder(obj.label);
+  if (!jpgUrl || !label) return;
+
+  const safeLabel = label.replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-');
+  const folderPath = path.join(baseDir, 'public', 'trench-books', safeLabel);
+  const filename = `${String(count).padStart(3, '0')}.jpg`;
+  const filePath = path.join(folderPath, filename);
+
+  try {
+    await fs.mkdir(folderPath, { recursive: true });
+    await fs.access(filePath);
+    console.log("⏭ Skipped (already downloaded)");
+  } catch {
+    try {
+      const response = await axios.get(jpgUrl, { responseType: 'arraybuffer', headers });
+      await fs.writeFile(filePath, response.data);
+      console.log(`✅ Downloaded: ${filePath}`);
+    } catch (err) {
+      console.error(`❌ Failed to download ${jpgUrl}`, err.message);
     }
-    return null;
   }
+}
 
-  /**
-   * Extracts the year from the linked contexts.
-   * Parses a slug to find the 4-digit year.
-   * @returns {string|null} Year string or null if not found.
-   */
-  function year_finder() {
-    const ctxs = obj['oc-gen:has-linked-contexts'];
-    if (ctxs && ctxs[5]) {
-      const raw = ctxs[5].slug;
-      const match = raw.match(/\d{2}-(\d{4})-/);
-      return match ? match[1] : null;
+function generateJsonData(obj, count, results) {
+  const label = labelFinder(obj.label);
+  const author = authorFinder(obj.label);
+  const date = yearFinder(obj);
+
+  if (!label) return;
+
+  const safeLabel = label.replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-');
+  const folderPath = path.join('trench-books', safeLabel);
+  const filename = `${String(count).padStart(3, '0')}.jpg`;
+  const filePath = path.join(folderPath, filename);
+
+  if (!results[safeLabel]) {
+    results[safeLabel] = {
+      author,
+      date,
+      'trench-book-images': {
+        location: folderPath,
+        contents: []
+      }
+    };
+  }
+  results[safeLabel]['trench-book-images']['contents'].push(filePath);
+}
+
+async function main() {
+  const baseDir = __dirname;
+  const outputFilename = path.join(baseDir, 'OCdata.json');
+  let existingData = {};
+
+  while (url) {
+    if (visitedUrls.has(url)) {
+      console.log(`🔁 Already visited ${url}, stopping to avoid infinite loop.`);
+      break;
     }
-    return null;
-  }
+    visitedUrls.add(url);
 
-  /**
-   * Finds the first JPG image URL from the 'oc-gen:has-files' array.
-   * @returns {string|null} JPG URL or null if not found.
-   */
-  function jpg_finder() {
-    const files = obj['oc-gen:has-files'];
-    return files && files[0] ? files[0].id : null;
-  }
-
-  /**
-   * Downloads the JPG image if it does not already exist.
-   * Creates the required directories if missing.
-   * Saves image as zero-padded count (e.g., 001.jpg).
-   * @param {number} count - Current image/page count.
-   */
-  async function jpg_downloader(count) {
-    const jpgUrl = jpg_finder();
-    const label = label_finder();
-    const safeLabel = label
-      .replace(/[^\w\s-]/g, '')   // Remove special characters (keep letters, numbers, space, dash)
-      .trim()
-      .replace(/\s+/g, '-');
-    const folderPath = path.join(__dirname, 'public', 'trench-books', safeLabel);
-    const filename = `${String(count).padStart(3, '0')}.jpg`;
-    const filePath = path.join(folderPath, filename);
-
-    // Skip download if file already exists to save time
-    if (fs.existsSync(filePath)) {
-      console.log(`⏭ Skipped (already downloaded)`);
-      return;
-    }
-
-    // Ensure folder exists
-    fs.mkdirSync(folderPath, { recursive: true });
+    console.log(count);
+    count += 1;
 
     try {
-      const response = await fetch(jpgUrl);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const response = await axios.get(url, { headers });
+      const obj = response.data;
 
-      const arrayBuffer = await response.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
+      await jpgDownloader(obj, count, baseDir);
+      generateJsonData(obj, count, results);
 
-      // Write image to file
-      fs.writeFileSync(filePath, buffer);
-      console.log(`✅ Downloaded: ${filePath}`);
-    } catch (e) {
-      console.log(`❌ Failed to download ${jpgUrl}`);
-      console.error(`Error: ${e.message}`);
-    }
-  }
+      let nextPageUrl = null;
+      const obsList = obj['oc-gen:has-obs'] || [];
 
-  /**
-   * Builds and updates the in-memory JSON structure with metadata and image paths.
-   * @param {number} count - Current image/page count.
-   */
-  function generate_json_data(count) {
-    const label = label_finder();
-    const author = author_finder();
-    const date = year_finder();
-    const safeLabel = label
-      .replace(/[^\w\s-]/g, '')   // Remove unwanted characters
-      .trim()                     // Trim leading/trailing whitespace
-      .replace(/\s+/g, '-'); 
-    console.log(safeLabel);
-    const folderPath = path.join('trench-books', safeLabel);
-    const filename = `${String(count).padStart(3, '0')}.jpg`;
-    const filePath = path.join(folderPath, filename);
+      const nexts = obsList.flatMap(obs => obs['oc-pred:1-next'] || []);
 
-    if (!results[safeLabel]) {
-      results[safeLabel] = {
-        author: author,
-        date: date,
-        'trench-book-images': {
-          location: folderPath,
-          contents: []
+      for (const next of nexts) {
+        let candidate = next.id;
+        if (candidate && !candidate.endsWith('.json')) {
+          candidate += '.json';
         }
-      };
-    }
+        if (candidate !== url && !visitedUrls.has(candidate)) {
+          nextPageUrl = candidate;
+          console.log("Next page:", nextPageUrl);
+          break;
+        }
+      }
 
-    // Append current image path to contents array
-    results[safeLabel]['trench-book-images'].contents.push(filePath);
-  }
-
-  // Download the image for current page
-  await jpg_downloader(count);
-
-  // Update JSON metadata for current page
-  generate_json_data(count);
-
-  // Find the next page URL to continue crawling
-  let nextPageUrl = null;
-  if (obj['oc-gen:has-obs']) {
-    for (const obs of obj['oc-gen:has-obs']) {
-      if (obs['oc-pred:1-next']) {
-        nextPageUrl = obs['oc-pred:1-next'][0].id;
-        if (!nextPageUrl.endsWith('.json')) nextPageUrl += '.json';
-        console.log("Next page:", nextPageUrl);
+      if (!nextPageUrl) {
+        console.log("🛑 No next unvisited page. Stopping.");
         break;
       }
+
+      url = nextPageUrl;
+    } catch (err) {
+      console.error("Error fetching page:", err.message);
+      break;
     }
-  } else {
-    console.log("Something wrong with JSON formatting. Check book JSON to debug");
   }
 
-  // Stop crawling if no next page URL
-  if (nextPageUrl) {
-    url = nextPageUrl;
-  } else {
-    console.log("No next page. Stopping.");
-    break;
-  }
-}
-
-// Path where the final JSON will be saved
-const outputFilename = path.join(__dirname, 'OCdata.json');
-let existingData = {};
-
-// Load existing JSON data if present to update it
-if (fs.existsSync(outputFilename)) {
-  console.log(`${outputFilename} already exists. Updating contents...`);
+  // Save JSON
   try {
-    const raw = fs.readFileSync(outputFilename, 'utf-8');
-    existingData = JSON.parse(raw);
-  } catch (e) {
-    console.log("Warning: JSON file is empty or corrupted. Starting fresh.");
-    existingData = {};
+    try {
+      const data = await fs.readFile(outputFilename, 'utf-8');
+      existingData = JSON.parse(data);
+      console.log(`${outputFilename} already exists. Updating contents...`);
+    } catch {
+      console.log(`${outputFilename} does not exist. Creating new file...`);
+    }
+
+    Object.assign(existingData, results);
+    await fs.writeFile(outputFilename, JSON.stringify(existingData, null, 2));
+    console.log(`📄 Dictionary successfully written to ${outputFilename}`);
+  } catch (err) {
+    console.error("Failed to write JSON:", err.message);
   }
-} else {
-  console.log(`${outputFilename} does not exist. Creating new file...`);
 }
 
-// Merge newly collected results into existing data
-Object.assign(existingData, results);
-
-// Write final merged data to file with indentation for readability
-fs.writeFileSync(outputFilename, JSON.stringify(existingData, null, 2));
-console.log(`Dictionary successfully written to ${outputFilename}`);
+main();
