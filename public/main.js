@@ -91,6 +91,13 @@ select.addEventListener('change', async (e) => {
       pageSlider.max = images.length;
       pageSlider.value = 1;
       pageSlider.disabled = false;
+      // Remove previous event listener if any
+      pageSlider.oninput = null;
+      // Attach event listener for slider navigation
+      pageSlider.addEventListener('input', (e) => {
+        const idx = parseInt(e.target.value, 10) - 1;
+        showImage(idx);
+      });
     }
     // Show first image
     showImage(0);
@@ -104,13 +111,7 @@ select.addEventListener('change', async (e) => {
     }
   }
 });
-// Handle slider input to jump to a page
-if (pageSlider) {
-  pageSlider.addEventListener('input', (e) => {
-    const idx = parseInt(e.target.value, 10) - 1;
-    showImage(idx);
-  });
-}
+// ...existing code...
 
 document.addEventListener('DOMContentLoaded', () => {
   const imageViewer = document.getElementById('imageViewer');
