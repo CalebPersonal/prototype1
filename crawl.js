@@ -1,19 +1,12 @@
 const fs = require('fs/promises');
 const path = require('path');
 const axios = require('axios');
+const { url } = require('inspector');
 
-// Starting URL
-let url = 'https://opencontext.org/media/6ee89e00-d436-440e-6a8c-d488a1776991.json';
-
-// Headers
 const headers = {
   'User-Agent': 'oc-api-client',
   'Accept': 'application/json',
 };
-
-let count = 0;
-const results = {};
-const visitedUrls = new Set();
 
 function labelFinder(label) {
   if (typeof label !== 'string' || !label.trim()) return null;
@@ -97,10 +90,12 @@ function generateJsonData(obj, count, results) {
   results[safeLabel]['trench-book-images']['contents'].push(filePath);
 }
 
-async function main() {
-  const baseDir = __dirname;
+async function downloadTrenchBooks(startUrl, baseDir = __dirname) {
+  let url = startUrl;
+  let count = 0;
+  const results = {};
+  const visitedUrls = new Set();
   const outputFilename = path.join(baseDir, 'OCdata.json');
-  let existingData = {};
 
   while (url) {
     if (visitedUrls.has(url)) {
@@ -121,7 +116,6 @@ async function main() {
 
       let nextPageUrl = null;
       const obsList = obj['oc-gen:has-obs'] || [];
-
       const nexts = obsList.flatMap(obs => obs['oc-pred:1-next'] || []);
 
       for (const next of nexts) {
@@ -150,6 +144,7 @@ async function main() {
 
   // Save JSON
   try {
+    let existingData = {};
     try {
       const data = await fs.readFile(outputFilename, 'utf-8');
       existingData = JSON.parse(data);
@@ -166,4 +161,14 @@ async function main() {
   }
 }
 
-main();
+module.exports = {
+  downloadTrenchBooks,
+};
+
+let urlList = ['https://opencontext.org/media/6ee89e00-d436-440e-6a8c-d488a1776991.json'];
+
+for (let i = 0; i < urlList.length; i++) {
+  downloadTrenchBooks(urlList[i])
+    .then(() => console.log(`Downloaded: ${urlList[i]}`))
+    .catch(console.error);
+}
