@@ -1,16 +1,15 @@
-const fs = require('fs/promises');
-const path = require('path');
-const axios = require('axios');
-const { url } = require('inspector');
+import fs from 'fs/promises';
+import path from 'path';
+import fetch from 'node-fetch'; // or use global fetch in newer Node versions
+import { fileURLToPath } from 'url';
 
-const headers = {
+const HEADERS = {
   'User-Agent': 'oc-api-client',
   'Accept': 'application/json',
 };
 
 function labelFinder(label) {
   if (typeof label !== 'string' || !label.trim()) return null;
-
   let cleaned = label.replace(/[^a-zA-Z0-9 :,-]+/g, '');
   cleaned = cleaned.replace(/,?\s*insert\s*\d*$/i, '');
   cleaned = cleaned.replace(/:\d+(-\d+)?$/, '');
@@ -28,7 +27,7 @@ function authorFinder(label) {
 function yearFinder(obj) {
   const ctxs = obj['oc-gen:has-linked-contexts'] || [];
   if (ctxs.length > 5) {
-    const raw = ctxs[5]?.slug || '';
+    const raw = ctxs[5].slug || '';
     const match = raw.match(/\d{2}-(\d{4})-/);
     return match ? match[1] : null;
   }
@@ -37,7 +36,12 @@ function yearFinder(obj) {
 
 function jpgFinder(obj) {
   const files = obj['oc-gen:has-files'] || [];
-  return files[0]?.id || null;
+  return files.length > 0 ? files[0].id : null;
+}
+
+function coordinatesFinder(obj) {
+  const features = obj.features || [];
+  return features.length > 0 ? features[0].geometry.coordinates : null;
 }
 
 async function jpgDownloader(obj, count, baseDir) {
@@ -47,50 +51,58 @@ async function jpgDownloader(obj, count, baseDir) {
 
   const safeLabel = label.replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-');
   const folderPath = path.join(baseDir, 'public', 'trench-books', safeLabel);
-  const filename = `${String(count).padStart(3, '0')}.jpg`;
+  const filename = String(count).padStart(3, '0') + '.jpg';
   const filePath = path.join(folderPath, filename);
 
   try {
     await fs.mkdir(folderPath, { recursive: true });
-    await fs.access(filePath);
-    console.log("⏭ Skipped (already downloaded)");
-  } catch {
+    // Check if file exists
     try {
-      const response = await axios.get(jpgUrl, { responseType: 'arraybuffer', headers });
-      await fs.writeFile(filePath, response.data);
-      console.log(`✅ Downloaded: ${filePath}`);
-    } catch (err) {
-      console.error(`❌ Failed to download ${jpgUrl}`, err.message);
+      await fs.access(filePath);
+      console.log('⏭ Skipped (already downloaded)');
+      return;
+    } catch {
+      // file doesn't exist, continue to download
     }
+
+    const response = await fetch(jpgUrl, { headers: HEADERS });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const buffer = await response.buffer();
+    await fs.writeFile(filePath, buffer);
+    console.log(`✅ Downloaded: ${filePath}`);
+  } catch (e) {
+    console.log(`❌ Failed to download ${jpgUrl}: ${e.message}`);
   }
 }
 
 function generateJsonData(obj, count, results) {
   const label = labelFinder(obj.label);
-  const author = authorFinder(obj.label);
-  const date = yearFinder(obj);
-
   if (!label) return;
 
+  const author = authorFinder(obj.label);
+  const date = yearFinder(obj);
+  const coords = coordinatesFinder(obj);
+
   const safeLabel = label.replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-');
-  const folderPath = path.join('trench-books', safeLabel);
-  const filename = `${String(count).padStart(3, '0')}.jpg`;
-  const filePath = path.join(folderPath, filename);
+  const folderPath = `trench-books/${safeLabel}`;
+  const filename = String(count).padStart(3, '0') + '.jpg';
+  const filePath = `${folderPath}/${filename}`;
 
   if (!results[safeLabel]) {
     results[safeLabel] = {
       author,
       date,
-      'trench-book-images': {
+      coordinates: coords,
+      "trench-book-images": {
         location: folderPath,
         contents: []
       }
     };
   }
-  results[safeLabel]['trench-book-images']['contents'].push(filePath);
+  results[safeLabel]["trench-book-images"].contents.push(filePath);
 }
 
-async function downloadTrenchBooks(startUrl, baseDir = __dirname) {
+async function downloadTrenchBooks(startUrl, baseDir = '.') {
   let url = startUrl;
   let count = 0;
   const results = {};
@@ -105,11 +117,12 @@ async function downloadTrenchBooks(startUrl, baseDir = __dirname) {
     visitedUrls.add(url);
 
     console.log(count);
-    count += 1;
+    count++;
 
     try {
-      const response = await axios.get(url, { headers });
-      const obj = response.data;
+      const response = await fetch(url, { headers: HEADERS });
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const obj = await response.json();
 
       await jpgDownloader(obj, count, baseDir);
       generateJsonData(obj, count, results);
@@ -118,26 +131,23 @@ async function downloadTrenchBooks(startUrl, baseDir = __dirname) {
       const obsList = obj['oc-gen:has-obs'] || [];
       const nexts = obsList.flatMap(obs => obs['oc-pred:1-next'] || []);
 
-      for (const next of nexts) {
-        let candidate = next.id;
-        if (candidate && !candidate.endsWith('.json')) {
-          candidate += '.json';
-        }
+      for (const nextItem of nexts) {
+        let candidate = nextItem.id;
+        if (candidate && !candidate.endsWith('.json')) candidate += '.json';
         if (candidate !== url && !visitedUrls.has(candidate)) {
           nextPageUrl = candidate;
-          console.log("Next page:", nextPageUrl);
+          console.log('Next page:', nextPageUrl);
           break;
         }
       }
 
       if (!nextPageUrl) {
-        console.log("🛑 No next unvisited page. Stopping.");
+        console.log('🛑 No next unvisited page. Stopping.');
         break;
       }
-
       url = nextPageUrl;
-    } catch (err) {
-      console.error("Error fetching page:", err.message);
+    } catch (e) {
+      console.log('Error fetching page:', e.message);
       break;
     }
   }
@@ -146,8 +156,8 @@ async function downloadTrenchBooks(startUrl, baseDir = __dirname) {
   try {
     let existingData = {};
     try {
-      const data = await fs.readFile(outputFilename, 'utf-8');
-      existingData = JSON.parse(data);
+      const fileContents = await fs.readFile(outputFilename, 'utf-8');
+      existingData = JSON.parse(fileContents);
       console.log(`${outputFilename} already exists. Updating contents...`);
     } catch {
       console.log(`${outputFilename} does not exist. Creating new file...`);
@@ -156,19 +166,13 @@ async function downloadTrenchBooks(startUrl, baseDir = __dirname) {
     Object.assign(existingData, results);
     await fs.writeFile(outputFilename, JSON.stringify(existingData, null, 2));
     console.log(`📄 Dictionary successfully written to ${outputFilename}`);
-  } catch (err) {
-    console.error("Failed to write JSON:", err.message);
+  } catch (e) {
+    console.log('Failed to write JSON:', e.message);
   }
 }
 
-module.exports = {
-  downloadTrenchBooks,
-};
-
-let urlList = ['https://opencontext.org/media/6ee89e00-d436-440e-6a8c-d488a1776991.json'];
-
-for (let i = 0; i < urlList.length; i++) {
-  downloadTrenchBooks(urlList[i])
-    .then(() => console.log(`Downloaded: ${urlList[i]}`))
-    .catch(console.error);
-}
+  const urls = ['https://opencontext.org/media/6ee89e00-d436-440e-6a8c-d488a1776991.json'];
+  for (const url of urls) {
+    await downloadTrenchBooks(url);
+    console.log(`Downloaded: ${url}`);
+  }
