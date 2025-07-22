@@ -231,6 +231,8 @@ fetch('OCdata.json')
     renderFilteredBooks();
   });
 
+  
+// Function to render filtered books based on user input
 function renderFilteredBooks() {
   const author = document.getElementById('authorFilter').value.toLowerCase();
   const date = document.getElementById('dateFilter').value.toLowerCase();
