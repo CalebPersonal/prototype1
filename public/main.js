@@ -132,6 +132,24 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// --- Google Maps integration ---
+// Function to plot the trench location on a Google Map
+function plotMap(coords) {
+  if (!coords || coords.length !== 2) return;
+  const mapDiv = document.getElementById('map');
+  const latLng = { lat: coords[1], lng: coords[0] }; // [lng, lat] → {lat, lng}
+  const map = new google.maps.Map(mapDiv, {
+    center: latLng,
+    zoom: 13,
+    mapTypeId: 'terrain'
+  });
+  new google.maps.Marker({
+    position: latLng,
+    map: map,
+    title: 'Trench Location'
+  });
+}
+
 
 
 // --- Book info display ---
@@ -153,11 +171,19 @@ select.addEventListener('change', async (e) => {
         infoAuthor.textContent = selectedBook.author || '-';
         infoDate.textContent = selectedBook.date || '-';
         infoCoords.textContent = selectedBook.coordinates ? selectedBook.coordinates.join(', ') : '-';
+
+        // Plot map if coordinates are available
+        if (selectedBook.coordinates) {
+          plotMap(selectedBook.coordinates);
+        } else {
+          document.getElementById('map').innerHTML = '';
+        }
       } else {
         infoTitle.textContent = '-';
         infoAuthor.textContent = '-';
         infoDate.textContent = '-';
         infoCoords.textContent = '-';
+        document.getElementById('map').innerHTML = '';
       }
     })
     .catch(error => {
@@ -168,7 +194,6 @@ select.addEventListener('change', async (e) => {
       console.error('Error loading JSON:', error);
     });
 });
-
 
 
 // --- Swipe support ---
