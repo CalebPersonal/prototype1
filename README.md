@@ -1,62 +1,168 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Trench Book Viewer – README
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+---
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Overview
 
-## Description
+**Trench Book Viewer** is a full-stack web application built using **NestJS** to support the digital preservation and exploration of archaeological trench books. It offers a streamlined way to browse scanned trench book pages and metadata in a clean, user-friendly interface.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+**Key Features:**
 
-## Project setup
+* 📚 A NestJS backend for serving book and image metadata
+* ⚙️ Modern JavaScript frontend with gesture support and interactive navigation
+* 📱 Mobile and desktop viewing compatibility
+* 🚀 Easy configuration and deployment
+
+---
+
+## Getting Started
+
+### 1. Install Dependencies
 
 ```bash
-$ npm install
+npm install
 ```
 
-## Compile and run the project
+### 2. Start the Server
 
 ```bash
-# development
-$ npm run start
+# Production
+npm run start
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# Development (hot reload)
+npm run start:dev
 ```
 
-## Run tests
+By default, the server runs on: `http://localhost:3000`
+
+### 3. Open in Your Browser
+
+Visit:
+
+```text
+http://<YOUR_IP_ADDRESS>:3000
+```
+
+Replace `<YOUR_IP_ADDRESS>` with your machine’s IP (e.g., `192.168.1.42`).
+
+The frontend is served from the `public/` directory.
+
+### 4. Set API Endpoint in Frontend
+
+In your `main.js` frontend file:
+
+```js
+const API_URL = 'http://<YOUR_IP_ADDRESS>:3000';
+```
+
+Replace `<YOUR_IP_ADDRESS>` accordingly.
+
+### 5. Add Your Own Book Data
+
+* Place your trench book images inside the appropriate folder in `public/`
+* Update `OCdata.json` to include metadata for the new books/images
+* Supported formats: JPG, PNG, or TIFF (standardized sizes recommended)
+* 
+* You may also use crawl.js to crawl through 'Poggio Civitate' Trench Books on 'opencontext.org'
+* To use, open full project in editor and naviaget to crawl.js, input <url>.json at bottom (should be example already). 
+* Go to console and type node crawl.js and watch as it downloads imgs to correct folder, then at end update the .json wirh all correct information.
+
+---
+
+## Features
+
+### 📖 Digital Trench Book Access
+
+* Browse high-resolution scans of handwritten field notes
+* Flip pages and zoom in on fine details
+
+### 🧠 Metadata Support
+
+* Display structured data for each trench book
+* Compatible with linked open data sources like OpenContext
+
+### 📱 Mobile-Friendly
+
+* Swipe gestures for mobile navigation
+* Responsive layout for small screens
+
+### 🔍 Powerful Filtering *(Planned)*
+
+* Filter books by trench, year, site, or supervisor
+
+---
+
+## Troubleshooting
+
+### Common Issues:
+
+* **Images or metadata not loading**
+
+  * Check your IP address in `main.js`
+  * Confirm that image paths and `OCdata.json` entries match
+
+* **API not responding**
+
+  * Ensure backend is running on the correct port
+  * Make sure no firewall is blocking local access
+
+---
+
+## Testing
+
+Run tests for the backend API:
 
 ```bash
-# unit tests
-$ npm run test
+# Unit tests
+npm run test
 
-# e2e tests
-$ npm run test:e2e
+# End-to-end tests
+npm run test:e2e
 
-# test coverage
-$ npm run test:cov
+# Test coverage
+npm run test:cov
 ```
+
+---
+
+## Deployment Tips
+
+To deploy on a live server or classroom network:
+
+1. Change the IP and port to match your public host
+2. Serve via Nginx or Apache (recommended for static file caching)
+3. Consider Dockerizing the application for consistency
+
+---
+
+## Contributing
+
+We welcome pull requests, feedback, and feature requests!
+
+### To contribute:
+
+* Fork the repository
+* Make your changes on a feature branch
+* Submit a pull request with a clear description
+
+---
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is licensed under the **MIT License**. See the [LICENSE](./LICENSE) file for details.
+
+---
+
+## Acknowledgements
+
+Special thanks to:
+
+* 🧱 NestJS for the robust backend framework
+* 🧩 OpenContext for metadata standards
+* 🏺 Archaeologists and field teams whose work made these records possible
+
+---
+
+**Enjoy exploring the trench books!**
+
+🗺️🏛️📚
