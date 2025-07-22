@@ -4,6 +4,7 @@ const apiBase = 'http://192.168.0.133:3000'; // Mag IP
 // const apiBase = 'http://172.20.10.11:3000'; // Hotspot IP
 // const apiBase = 'http://192.168.1.117:3000'; // Hotel IP
 // const apiBase = 'https://sweet-cobras-sit.loca.lt'; // Ngrok URL
+// const apiBase = 'https://192.168.0.54:3000'; // Portable IP
 
 const select = document.getElementById('trenchBookSelect');
 const imagesContainer = document.getElementById('imagesContainer');
