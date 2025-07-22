@@ -26,7 +26,7 @@ interface Data {
 // const scriptDir = path.dirname(__filename);
 
 // Construct the path to the JSON data file
-const dataPath = path.join(process.cwd(), 'OCdata.json');
+const dataPath = path.join(process.cwd(), 'public','OCdata.json');
 
 let rawData: Buffer;
 try {
