@@ -114,7 +114,7 @@ async function downloadTrenchBooks(startUrl, baseDir = '.') {
   let count = 0;
   const results = {};
   const visitedUrls = new Set();
-  const outputFilename = path.join(baseDir, 'OCdata.json');
+  const outputFilename = path.join(baseDir, 'public', 'OCdata.json');
 
   while (url) {
     if (visitedUrls.has(url)) {

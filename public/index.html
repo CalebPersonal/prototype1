@@ -18,7 +18,16 @@
       <option value="Trench-Book-AC-I">Trench-Book-AC-I</option>
       <option value="Trench-Book-GD-I">Trench-Book-GD-I</option>
     </select>
-    <h2 id="TrenchTitle">Current Trench: None</h2>
+
+      <div style="display: flex; justify-content: center; align-items: flex-start;">
+    <table id="trenchInfoTable" style="margin-right: 32px; min-width: 220px; background: #f8f4f9; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+      <tr><th colspan="2" style="text-align:center;">Trench Info</th></tr>
+      <tr><td>Title</td><td id="infoTitle">-</td></tr>
+      <tr><td>Author</td><td id="infoAuthor">-</td></tr>
+      <tr><td>Date</td><td id="infoDate">-</td></tr>
+      <tr><td>Coordinates</td><td id="infoCoords">-</td></tr>
+    </table>
+      </div>
 
     <div id="imageViewer">
       <button id="fullscreenBtn" title="Fullscreen">⛶</button>

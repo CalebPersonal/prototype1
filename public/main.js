@@ -6,6 +6,7 @@ const apiBase = 'http://192.168.0.133:3000'; // Mag IP
 // const apiBase = 'https://sweet-cobras-sit.loca.lt'; // Ngrok URL
 // const apiBase = 'https://192.168.0.54:3000'; // Portable IP
 
+
 const select = document.getElementById('trenchBookSelect');
 const imagesContainer = document.getElementById('imagesContainer');
 const currentImage = document.getElementById('currentImage');
@@ -129,15 +130,46 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-const trenchTitle = document.getElementById('TrenchTitle');
+
+
+
+const infoTitle = document.getElementById('infoTitle');
+const infoAuthor = document.getElementById('infoAuthor');
+const infoDate = document.getElementById('infoDate');
+const infoCoords = document.getElementById('infoCoords');
 
 select.addEventListener('change', async (e) => {
-  const selected = e.target.value;
-  // Update the header immediately when selection changes
-  trenchTitle.textContent = selected ? `Current Trench: ${selected}` : 'Current Trench: None';
+  fetch('OCdata.json')
+    .then(response => response.json())
+    .then(data => {
+      const selectedLabel = select.value;
+      const selectedBook = data[selectedLabel];
 
-  // ...existing code for loading images...
+      if (selectedBook) {
+        infoTitle.textContent = selectedBook.trenchName || '-';
+        infoAuthor.textContent = selectedBook.author || '-';
+        infoDate.textContent = selectedBook.date || '-';
+        infoCoords.textContent = selectedBook.coordinates ? selectedBook.coordinates.join(', ') : '-';
+      } else {
+        infoTitle.textContent = '-';
+        infoAuthor.textContent = '-';
+        infoDate.textContent = '-';
+        infoCoords.textContent = '-';
+      }
+    })
+    .catch(error => {
+      infoTitle.textContent = '-';
+      infoAuthor.textContent = '-';
+      infoDate.textContent = '-';
+      infoCoords.textContent = '-';
+      console.error('Error loading JSON:', error);
+    });
 });
+
+
+
+
+
 
 // --- Swipe support ---
 let touchStartX = 0;

@@ -1,3 +1,4 @@
+/* --- Fullscreen slider styling --- */
 #imageViewer:fullscreen #pageSlider {
   position: absolute;
   left: 50%;
@@ -9,13 +10,15 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   pointer-events: auto;
 }
-/*
-| Main body styling: sets background, removes default margin, adds padding, and sets font. */
+
+/* --- Main body styling --- */
 body {
   position: relative;
   min-height: 100vh;
   margin: 0;
 }
+
+/* --- Blurred background image overlay --- */
 body::before {
   content: "";
   position: fixed;
@@ -29,13 +32,13 @@ body::before {
   pointer-events: none;
 }
 
+/* --- Main content wrapper --- */
 .content {
   position: relative;
   z-index: 1;
 }
 
-/*
-| Main heading style: centered, large, and colored. */
+/* --- Main heading style --- */
 h1 {
   text-align: center;
   font-size: 2.5rem;
@@ -43,6 +46,7 @@ h1 {
   margin-bottom: 20px;
 }
 
+/* --- Subheading style (for current trench) --- */
 h2 {
   text-align: center;
   font-size: 1.3rem;
@@ -51,9 +55,7 @@ h2 {
   margin-bottom: 2px; /* reduced for closer spacing */
 }
 
-
-/*
-| Label styling: centered, slightly larger, and spaced. */
+/* --- Label styling --- */
 label {
   display: block;
   text-align: center;
@@ -62,22 +64,20 @@ label {
   color: #444;
 }
 
-/*
-| Fullscreen mode for image viewer: takes up entire viewport, centers image, black background. */
+/* --- Image viewer fullscreen mode --- */
 #imageViewer:fullscreen {
   width: 100vw;
   height: 100vh;
   max-width: none;
   max-height: none;
   padding: 0;
-  background-color: #000; /* optional: black background for image viewing */
+  background-color: #000; /* black background for image viewing */
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/*
-| Image styling in fullscreen: fills height, no border or shadow, keeps aspect ratio. */
+/* --- Image styling in fullscreen --- */
 #imageViewer:fullscreen img {
   width: auto;
   height: 100%;
@@ -88,14 +88,12 @@ label {
   box-shadow: none;
 }
 
-/*
-| Ensures buttons are above the image in fullscreen. */
+/* --- Ensures buttons are above the image in fullscreen --- */
 #imageViewer:fullscreen button {
   z-index: 20;
 }
 
-/*
-| Fullscreen button: round, top-right, pastel color, shadow, interactive. */
+/* --- Fullscreen button styling --- */
 #fullscreenBtn {
   position: absolute;
   top: 10px;
@@ -112,15 +110,13 @@ label {
   transition: background 0.3s ease, transform 0.2s ease;
 }
 
-/*
-| Fullscreen button hover effect: color and scale. */
+/* --- Fullscreen button hover effect --- */
 #fullscreenBtn:hover {
   background: #a8cbdc; /* darker pastel blue */
   transform: scale(1.1);
 }
 
-/*
-| Dropdown for selecting trench book: centered, padded, rounded, subtle shadow. */
+/* --- Dropdown for selecting trench book --- */
 #trenchBookSelect {
   display: block;
   margin: 0 auto 16px auto;
@@ -133,24 +129,14 @@ label {
   transition: border 0.2s ease;
 }
 
-/*
-| Focus style for dropdown: blue border and glow. */
+/* --- Focus style for dropdown --- */
 #trenchBookSelect:focus {
   outline: none;
   border-color: #a8cbdc;
   box-shadow: 0 0 5px rgba(168, 203, 220, 0.5);
 }
 
-/*
-| (If used) Focus style for another dropdown. */
-#bookSelect:focus {
-  outline: none;
-  border-color: #a8cbdc;
-  box-shadow: 0 0 5px rgba(168, 203, 220, 0.5);
-}
-
-/*
-| Main image viewer container: centered, pastel background, rounded, shadow, disables text selection. */
+/* --- Main image viewer container --- */
 #imageViewer {
   max-width: 650px;
   margin: 16px auto;
@@ -162,8 +148,7 @@ label {
   user-select: none;
 }
 
-/*
-| Previous/Next navigation buttons: absolutely positioned, round, pastel, shadow, interactive. */
+/* --- Previous/Next navigation buttons --- */
 #prevBtn,
 #nextBtn {
   position: absolute;
@@ -182,28 +167,24 @@ label {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-/*
-| Previous button: left side. */
+/* --- Previous button position --- */
 #prevBtn {
   left: -20px;
 }
 
-/*
-| Next button: right side. */
+/* --- Next button position --- */
 #nextBtn {
   right: -20px;
 }
 
-/*
-| Navigation button hover: color and scale up. */
+/* --- Navigation button hover effect --- */
 #prevBtn:hover,
 #nextBtn:hover {
   background: #a8cbdc; /* slightly darker pastel */
   transform: translateY(-50%) scale(1.1);
 }
 
-/*
-| Main displayed image: fills container, rounded, shadow, keeps aspect ratio. */
+/* --- Main displayed image --- */
 #currentImage {
   display: block;
   width: 100%;
@@ -211,4 +192,66 @@ label {
   object-fit: contain;
   border-radius: 10px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Trench info table styling --- */
+#trenchInfoTable {
+  margin-right: 32px;
+  min-width: 220px;
+  background: #f8f4f9; /* pastel pink */
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: inherit;
+  font-size: 1rem;
+  color: #444;
+  overflow: hidden;
+}
+
+#trenchInfoTable th {
+  background: #e3e6f5; /* pastel blue */
+  color: #5c5470;
+  font-size: 1.1rem;
+  padding: 10px 0;
+  border-radius: 12px 12px 0 0;
+  letter-spacing: 1px;
+}
+
+#trenchInfoTable td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #ececec;
+  background: #fff;
+}
+
+#trenchInfoTable tr:last-child td {
+  border-bottom: none;
+}
+
+#trenchInfoTable tr td:first-child {
+  font-weight: 500;
+  color: #7a6f9b;
+  background: #f3f1fa;
+  width: 90px;
+  border-radius: 0 0 0 0;
+}
+
+#trenchInfoTable td:last-child {
+  text-align: left;
+  color: #444;
+  background: #fff;
+  border-radius: 0 0 12px 0;
+}
+
+/* --- Responsive: stack on mobile --- */
+@media (max-width: 700px) {
+  #trenchInfoTable {
+    margin: 0 auto 18px auto;
+    width: 95vw;
+    min-width: 0;
+  }
+  .content > div[style*="display: flex"] {
+    flex-direction: column;
+    align-items: center;
+  }
 }
