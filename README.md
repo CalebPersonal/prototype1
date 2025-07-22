@@ -91,9 +91,9 @@ Replace `<YOUR_IP_ADDRESS>` accordingly.
 * Uses the Google maps API to plot each coordinate point tied to Trench Books
 * Enables users to visually see where everything is located
 
-### 🔍 Powerful Filtering *(Planned)*
+### 🔍 Powerful Filtering
 
-* Filter books by trench, year, site, or supervisor
+* Filter books by trench, year, site, or Author
 
 ---
 
