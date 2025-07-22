@@ -113,8 +113,10 @@ select.addEventListener('change', async (e) => {
     }
   }
 });
-// ...existing code...
 
+
+// --- Fullscreen support ---
+// Add fullscreen functionality to the image viewer
 document.addEventListener('DOMContentLoaded', () => {
   const imageViewer = document.getElementById('imageViewer');
   const fullscreenBtn = document.getElementById('fullscreenBtn');
@@ -132,7 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-
+// --- Book info display ---
+// Populate trench info table based on selected book
 const infoTitle = document.getElementById('infoTitle');
 const infoAuthor = document.getElementById('infoAuthor');
 const infoDate = document.getElementById('infoDate');
