@@ -137,11 +137,13 @@ document.addEventListener('DOMContentLoaded', () => {
 function plotMap(coords) {
   if (!coords || coords.length !== 2) return;
   const mapDiv = document.getElementById('map');
-  const latLng = { lat: coords[1], lng: coords[0] }; // [lng, lat] → {lat, lng}
+  const latLng = { lat: coords[0], lng: coords[1] };
+  if (!mapDiv) return; // Ensure mapDiv exists
   const map = new google.maps.Map(mapDiv, {
     center: latLng,
-    zoom: 13,
-    mapTypeId: 'terrain'
+    zoom: 12,
+    mapTypeId: 'terrain',
+    controlSize: 27
   });
   new google.maps.Marker({
     position: latLng,

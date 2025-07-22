@@ -98,7 +98,7 @@ function generateJsonData(obj, count, results) {
     results[safeLabel] = {
       author,
       date,
-      coordinates: coords,
+      coordinates: [coords[1], coords[0]],
       trenchName: trenchName,
       "trench-book-images": {
         location: folderPath,
@@ -144,7 +144,6 @@ async function downloadTrenchBooks(startUrl, baseDir = '.') {
         if (candidate !== url && !visitedUrls.has(candidate)) {
           nextPageUrl = candidate;
           console.log('Next page:', nextPageUrl);
-          console.log(results);
           break;
         }
       }
