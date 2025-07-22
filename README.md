@@ -153,16 +153,6 @@ This project is licensed under the **MIT License**. See the [LICENSE](./LICENSE)
 
 ---
 
-## Acknowledgements
-
-Special thanks to:
-
-* 🧱 NestJS for the robust backend framework
-* 🧩 OpenContext for metadata standards
-* 🏺 Archaeologists and field teams whose work made these records possible
-
----
-
 **Enjoy exploring the trench books!**
 
 🗺️🏛️📚
