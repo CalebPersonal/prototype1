@@ -221,3 +221,52 @@ function handleGesture() {
     showImage(currentIndex - 1);
   }
 }
+
+// Fetch all books from OCdata.json
+let allBooks = {};
+fetch('OCdata.json')
+  .then(res => res.json())
+  .then(data => {
+    allBooks = data;
+    renderFilteredBooks();
+  });
+
+function renderFilteredBooks() {
+  const author = document.getElementById('authorFilter').value.toLowerCase();
+  const date = document.getElementById('dateFilter').value.toLowerCase();
+  const trenchName = document.getElementById('trenchNameFilter').value.toLowerCase();
+  const filteredBooksDiv = document.getElementById('filteredBooks');
+  filteredBooksDiv.innerHTML = '';
+
+  Object.entries(allBooks).forEach(([label, book]) => {
+    if (
+      (!author || (book.author && book.author.toLowerCase().includes(author))) &&
+      (!date || (book.date && book.date.toLowerCase().includes(date))) &&
+      (!trenchName || (book.trenchName && book.trenchName.toLowerCase().includes(trenchName)))
+    ) {
+      const div = document.createElement('div');
+      div.className = 'filtered-book';
+      div.style = 'padding:8px;margin-bottom:8px;background:#fff;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,0.04);cursor:pointer;';
+      div.innerHTML = `<strong>${label}</strong><br>
+        Author: ${book.author}<br>
+        Date: ${book.date}<br>
+        Trench Name: ${book.trenchName}`;
+      div.onclick = () => {
+        document.getElementById('trenchBookSelect').value = label;
+        document.getElementById('trenchBookSelect').dispatchEvent(new Event('change'));
+      };
+      filteredBooksDiv.appendChild(div);
+    }
+  });
+}
+
+// Add event listeners for filters
+['authorFilter', 'dateFilter', 'trenchNameFilter'].forEach(id => {
+  document.getElementById(id).addEventListener('input', renderFilteredBooks);
+});
+document.getElementById('clearFilters').addEventListener('click', () => {
+  document.getElementById('authorFilter').value = '';
+  document.getElementById('dateFilter').value = '';
+  document.getElementById('trenchNameFilter').value = '';
+  renderFilteredBooks();
+});

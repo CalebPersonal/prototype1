@@ -3,16 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <title>Trench Book Viewer</title>
-
-  <!-- ✅ This links your external CSS file -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="content">
     <h1>Trench Book Viewer</h1>
+
     <label for="trenchBookSelect">Choose a Book:</label>
-
-
     <select id="trenchBookSelect">
       <option value="">-- Choose a Book --</option>
       <option value="Trench-Book-CT-III">Trench-Book-CT-III</option>
@@ -21,31 +18,57 @@
       <option value="Trench-Book-GD-I">Trench-Book-GD-I</option>
     </select>
 
-      <div style="display: flex; justify-content: center; align-items: flex-start;">
-    <table id="trenchInfoTable" style="margin-right: 32px; min-width: 220px; background: #f8f4f9; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-      <tr><th colspan="2" style="text-align:center;">Trench Info</th></tr>
-      <tr><td>Title</td><td id="infoTitle">-</td></tr>
-      <tr><td>Author</td><td id="infoAuthor">-</td></tr>
-      <tr><td>Date</td><td id="infoDate">-</td></tr>
-      <tr><td>Coordinates</td><td id="infoCoords">-</td></tr>
-    </table>
+    <!-- Main layout: centered content + sidebar -->
+    <div class="main-layout">
 
+      
+      <!-- Centered main content -->
+      <div class="content-center">
+        <!-- Trench info -->
+        <table id="trenchInfoTable">
+          <tr><th colspan="2">Trench Info</th></tr>
+          <tr><td>Title</td><td id="infoTitle">-</td></tr>
+          <tr><td>Author</td><td id="infoAuthor">-</td></tr>
+          <tr><td>Date</td><td id="infoDate">-</td></tr>
+          <tr><td>Coordinates</td><td id="infoCoords">-</td></tr>
+        </table>
+          <div id="map" class="mini-map"></div>
+      </div>
 
-    <div id="map" style="width: 320px; height: 220px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin: 0 32px 16px 0;"></div>
-    </div>
+        <!-- Image viewer -->
+        <div id="imageViewer">
+          <button id="fullscreenBtn" title="Fullscreen">⛶</button>
+          <button id="prevBtn">◀</button>
+          <img id="currentImage" src="images/default.jpg" alt="No book selected" />
+          <button id="nextBtn">▶</button>
+          <input type="range" id="pageSlider" min="1" value="1" disabled />
+        </div>
 
-    <div id="imageViewer">
-      <button id="fullscreenBtn" title="Fullscreen">⛶</button>
-      <button id="prevBtn">◀</button>
-      <!-- Show a default image when no book is selected -->
-      <img id="currentImage" src="images/default.jpg" alt="No book selected" />
-      <button id="nextBtn">▶</button>
-      <!-- Page slider for quick navigation -->
-      <input type="range" id="pageSlider" min="1" value="1" disabled style="width: 90%; margin: 20px 5%;" />
-    </div>
+        <!-- Image thumbnails or extra images -->
+        <div id="imagesContainer"></div>
 
-    <div id="imagesContainer"></div>
+      <!-- Sidebar filter -->
+      <div id="filterSidebar" class="sidebar">
+        <h3>Filter Books</h3>
+
+        <label for="authorFilter">Author:</label>
+        <input type="text" id="authorFilter" placeholder="Author" class="filter-input" />
+
+        <label for="dateFilter">Date:</label>
+        <input type="text" id="dateFilter" placeholder="Year" class="filter-input" />
+
+        <label for="trenchNameFilter">Trench Name:</label>
+        <input type="text" id="trenchNameFilter" placeholder="Trench Name" class="filter-input" />
+
+        <button id="clearFilters" class="clear-button">Clear Filters</button>
+
+        <div id="filteredBooks" class="filtered-books-list"></div>
+      </div>
+
+    </div> <!-- end .main-layout -->
   </div>
+
+  <!-- JS Scripts -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxRWnEtMTZTE8MtPtDILnW0UjAHeFR6Gw"></script>
   <script src="main.js"></script>
 </body>
