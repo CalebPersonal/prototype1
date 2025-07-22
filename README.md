@@ -35,7 +35,17 @@ npm run start:dev
 
 By default, the server runs on: `http://localhost:3000`
 
-### 3. Open in Your Browser
+### 3. Set API Endpoint in Frontend
+
+In your `main.js` frontend file:
+
+```js
+const API_URL = 'http://<YOUR_IP_ADDRESS>:3000';
+```
+
+Replace `<YOUR_IP_ADDRESS>` accordingly.
+
+### 4. Open in Your Browser
 
 Visit:
 
@@ -46,16 +56,6 @@ http://<YOUR_IP_ADDRESS>:3000
 Replace `<YOUR_IP_ADDRESS>` with your machine’s IP (e.g., `192.168.1.42`).
 
 The frontend is served from the `public/` directory.
-
-### 4. Set API Endpoint in Frontend
-
-In your `main.js` frontend file:
-
-```js
-const API_URL = 'http://<YOUR_IP_ADDRESS>:3000';
-```
-
-Replace `<YOUR_IP_ADDRESS>` accordingly.
 
 ### 5. Add Your Own Book Data
 
