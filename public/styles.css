@@ -302,7 +302,10 @@ label[for="trenchBookSelect"] {
 }
 
 .filtered-books-list {
+  max-height: 200px; /* or whatever fits nicely in your layout */
+  overflow-y: auto;
   margin-top: 16px;
+  padding-right: 6px;
 }
 
 /* =======================
