@@ -2,6 +2,8 @@
   "Trench-Book-CT-III": {
     "author": "CT",
     "date": "1985",
+    "coordinates": [11.40159284989527, 43.15259084734114],
+    "trenchName": "Tesoro 25",
     "trench-book-images": {
       "location": "trench-books/Trench-Book-CT-III",
       "contents": [
@@ -131,6 +133,8 @@
   "Trench-Book-AB-I": {
     "author": "AB",
     "date": "1972",
+    "coordinates": [11.402903659527, 43.153909673446],
+    "trenchName": "Tesoro 19",
     "trench-book-images": {
       "location": "trench-books/Trench-Book-AB-I",
       "contents": [
@@ -239,6 +243,8 @@
   "Trench-Book-AC-I": {
     "author": "AC",
     "date": "1984",
+    "coordinates": [11.401850069243821, 43.152594833649395],
+    "trenchName": "Tesoro 26",
     "trench-book-images": {
       "location": "trench-books/Trench-Book-AC-I",
       "contents": [

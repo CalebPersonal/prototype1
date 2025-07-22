@@ -129,6 +129,16 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+const trenchTitle = document.getElementById('TrenchTitle');
+
+select.addEventListener('change', async (e) => {
+  const selected = e.target.value;
+  // Update the header immediately when selection changes
+  trenchTitle.textContent = selected ? `Current Trench: ${selected}` : 'Current Trench: None';
+
+  // ...existing code for loading images...
+});
+
 // --- Swipe support ---
 let touchStartX = 0;
 let touchEndX = 0;

@@ -39,6 +39,11 @@ function jpgFinder(obj) {
   return files.length > 0 ? files[0].id : null;
 }
 
+function trenchFinder(obj) {
+  const trenchName = obj["oc-gen:has-linked-contexts"][4]['label'] || [];
+  return trenchName;
+}
+
 function coordinatesFinder(obj) {
   const features = obj.features || [];
   return features.length > 0 ? features[0].geometry.coordinates : null;
@@ -82,6 +87,7 @@ function generateJsonData(obj, count, results) {
   const author = authorFinder(obj.label);
   const date = yearFinder(obj);
   const coords = coordinatesFinder(obj);
+  const trenchName = trenchFinder(obj);
 
   const safeLabel = label.replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-');
   const folderPath = `trench-books/${safeLabel}`;
@@ -93,6 +99,7 @@ function generateJsonData(obj, count, results) {
       author,
       date,
       coordinates: coords,
+      trenchName: trenchName,
       "trench-book-images": {
         location: folderPath,
         contents: []
@@ -137,6 +144,7 @@ async function downloadTrenchBooks(startUrl, baseDir = '.') {
         if (candidate !== url && !visitedUrls.has(candidate)) {
           nextPageUrl = candidate;
           console.log('Next page:', nextPageUrl);
+          console.log(results);
           break;
         }
       }
