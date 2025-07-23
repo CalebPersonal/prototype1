@@ -50,16 +50,22 @@ async function loadAndCacheImage(url) {
 // Function to show an image based on the current index
 // Updates the image source and alt text, and handles slider position
 async function showImage(index) {
-  if (images.length === 0) return;
-  if (index < 0) currentIndex = images.length - 1;
-  else if (index >= images.length) currentIndex = 0;
-  else currentIndex = index;
+  let pathToImage = '/images/imageNotFound.jpg'; // Default image path
 
-  const selected = select.value;
-  const filename = images[currentIndex];
+  if (images !== null) {
+    if (index < 0) currentIndex = images.length - 1;
+    else if (index >= images.length) currentIndex = 0;
+    else currentIndex = index;
+    const selected = select.value;
+    const filename = images[currentIndex];
+
+    pathToImage = `${apiBase}/trench-books/${selected}/${filename}`;
+  }
+
+
 
   // call the function to load and cache the image
-  const cachedURL = await loadAndCacheImage(`${apiBase}/trench-books/${selected}/${filename}`);
+  const cachedURL = await loadAndCacheImage(pathToImage);
   currentImage.src = cachedURL;
   currentImage.alt = filename;
 
@@ -143,8 +149,6 @@ select.addEventListener('change', async (e) => {
     // Show first image
     showImage(0);
   } catch (error) {
-    console.error('Error:', error);
-    imagesContainer.textContent = '⚠️ Failed to load images. Please try again.';
     if (pageSlider) {
       pageSlider.disabled = true;
       pageSlider.value = 1;
