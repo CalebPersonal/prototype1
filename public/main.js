@@ -51,13 +51,15 @@ async function loadAndCacheImage(url) {
 // Updates the image source and alt text, and handles slider position
 async function showImage(index) {
   let pathToImage = '/images/imageNotFound.jpg'; // Default image path
+  let filename = 'imageNotFound.jpg'; // Default filename
+
 
   if (images !== null) {
     if (index < 0) currentIndex = images.length - 1;
     else if (index >= images.length) currentIndex = 0;
     else currentIndex = index;
     const selected = select.value;
-    const filename = images[currentIndex];
+    filename = images[currentIndex];
 
     pathToImage = `${apiBase}/trench-books/${selected}/${filename}`;
   }
