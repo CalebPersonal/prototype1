@@ -82,10 +82,21 @@ label {
 ======================= */
 .main-layout {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;             /* no wrapping */
+  overflow-x: auto;              /* enable horizontal scroll */
+  overflow-y: hidden;
   gap: 40px;
+  padding-bottom: 20px;          /* space for scroll if needed */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Edge */
+}
+
+.main-layout > * {
+  flex: 0 0 auto;                /* each child keeps its width */
+}
+
+.main-layout::-webkit-scrollbar {
+  display: none;
 }
 
 .content-center {
