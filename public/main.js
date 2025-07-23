@@ -3,10 +3,10 @@
 // const apiBase = 'http://192.168.0.133:3000'; // Mag IP
 // const apiBase = 'http://172.20.10.11:3000'; // Hotspot IP
 // const apiBase = 'http://192.168.1.153:3000'; // Hotel IP
-// const apiBase = 'http://192.168.0.54:3000'; // Hotel2 IP
+const apiBase = 'http://192.168.178.107:3000'; // Hotel2 IP
 // const apiBase = 'https://sweet-cobras-sit.loca.lt'; // Ngrok URL
 // const apiBase = 'https://192.168.0.54:3000'; // Portable IP
-const apiBase = 'http://3.65.1.225:3000'; // ← your new server
+// const apiBase = 'http://3.65.1.225:3000'; // ← your new server
 
 
 const select = document.getElementById('trenchBookSelect');
@@ -21,6 +21,13 @@ const pageSlider = document.getElementById('pageSlider');
 let images = [];
 let currentIndex = 0;
 
+// utility function to round coordinates to 5 decimal places
+function roundTo5(num) {
+  return Math.round(num * 100000) / 100000;
+}
+
+// Function to show an image based on the current index
+// Updates the image source and alt text, and handles slider position
 function showImage(index) {
   if (images.length === 0) return;
   if (index < 0) currentIndex = images.length - 1;
@@ -35,6 +42,12 @@ function showImage(index) {
   // Update slider position
   if (images.length > 0 && pageSlider) {
     pageSlider.value = currentIndex + 1;
+  }
+  
+  // Update page counter text
+  const pageCounter = document.getElementById('pageCounter');
+  if (pageCounter) {
+    pageCounter.textContent = `Page ${currentIndex + 1} of ${images.length}`;
   }
 }
 
@@ -136,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- Google Maps integration ---
 // Function to plot the trench location on a Google Map
+
 function plotMap(coords) {
   if (!coords || coords.length !== 2) return;
   const mapDiv = document.getElementById('map');
@@ -174,7 +188,9 @@ select.addEventListener('change', async (e) => {
         infoTitle.textContent = selectedBook.trenchName || '-';
         infoAuthor.textContent = selectedBook.author || '-';
         infoDate.textContent = selectedBook.date || '-';
-        infoCoords.textContent = selectedBook.coordinates ? selectedBook.coordinates.join(', ') : '-';
+        infoCoords.textContent = selectedBook.coordinates
+          ? selectedBook.coordinates.map(roundTo5).join(', ')
+          : '-';
 
         // Plot map if coordinates are available
         if (selectedBook.coordinates) {

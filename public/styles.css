@@ -303,6 +303,20 @@ label[for="trenchBookSelect"] {
   margin: 20px 5%;
 }
 
+#pageCounter {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.7);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #5c5470;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
 /* =======================
    FILTER SIDEBAR
 ======================= */
