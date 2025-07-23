@@ -87,8 +87,8 @@ label {
   overflow-y: hidden;
   gap: 40px;
   padding-bottom: 20px;          /* space for scroll if needed */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* Edge */
+  scrollbar-width: none;         /* Firefox */
+  -ms-overflow-style: none;      /* Edge */
 }
 
 .main-layout > * {
@@ -105,6 +105,31 @@ label {
   align-items: flex-start;
   flex: 1;
 }
+
+/* Equal height trench info + map */
+.info-map-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 260px; /* Try 240–300 depending on design */
+  gap: 12px;
+}
+
+#trenchInfoTable {
+  height: 120px;
+}
+
+.mini-map {
+  width: 320px;
+  height: 220px /* Adjust height as needed */;
+  min-height: 220px;
+  max-height: 220px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 0;
+}
+
 .select-wrapper {
   display: flex;
   flex-direction: column;
