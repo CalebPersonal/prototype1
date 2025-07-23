@@ -26,17 +26,25 @@ function roundTo5(num) {
   return Math.round(num * 100000) / 100000;
 }
 
-
 // Function to load and cache images
 const cache = new Map();
+loadAndCacheImage("/images/imageNotFound.jpg");
+
 async function loadAndCacheImage(url) {
   if (cache.has(url)) return cache.get(url);
 
-  const res = await fetch(url);
-  const blob = await res.blob();
-  const objectURL = URL.createObjectURL(blob);
-  cache.set(url, objectURL);
-  return objectURL;
+  try {
+    const res = await fetch(url);
+    if (!res.ok)
+      return cache.get("/images/imageNotFound.jpg"); // Fallback to default image if fetch fails
+
+    const blob = await res.blob();
+    const objectURL = URL.createObjectURL(blob);
+    cache.set(url, objectURL);
+    return objectURL;
+  } catch (err) {
+    return cache.get("/images/imageNotFound.jpg");
+  }
 }
 
 // Function to show an image based on the current index
@@ -265,7 +273,7 @@ fetch('OCdata.json')
     renderFilteredBooks();
   });
 
-  
+
 // Function to render filtered books based on user input
 function renderFilteredBooks() {
   const author = document.getElementById('authorFilter').value.toLowerCase();
