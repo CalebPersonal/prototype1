@@ -178,7 +178,7 @@ async function downloadTrenchBooks(startUrl, baseDir = '.') {
   }
 }
 
-  const urls = ['https://opencontext.org/media/6ee89e00-d436-440e-6a8c-d488a1776991.json'];
+  const urls = ['https://opencontext.org/media/4d3513f1-4102-41ba-4acf-354c37c6be28.json', 'https://opencontext.org/media/5d6442b0-369e-478c-ce6f-21d1db7b4727.json', 'https://opencontext.org/media/e647e5e9-aafb-46bc-c971-4ff433d52dba.json'];
   for (const url of urls) {
     await downloadTrenchBooks(url);
     console.log(`Downloaded: ${url}`);
