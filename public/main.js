@@ -26,9 +26,22 @@ function roundTo5(num) {
   return Math.round(num * 100000) / 100000;
 }
 
+
+// Function to load and cache images
+const cache = new Map();
+async function loadAndCacheImage(url) {
+  if (cache.has(url)) return cache.get(url);
+
+  const res = await fetch(url);
+  const blob = await res.blob();
+  const objectURL = URL.createObjectURL(blob);
+  cache.set(url, objectURL);
+  return objectURL;
+}
+
 // Function to show an image based on the current index
 // Updates the image source and alt text, and handles slider position
-function showImage(index) {
+async function showImage(index) {
   if (images.length === 0) return;
   if (index < 0) currentIndex = images.length - 1;
   else if (index >= images.length) currentIndex = 0;
@@ -36,7 +49,10 @@ function showImage(index) {
 
   const selected = select.value;
   const filename = images[currentIndex];
-  currentImage.src = `${apiBase}/trench-books/${selected}/${filename}`;
+
+  // call the function to load and cache the image
+  const cachedURL = await loadAndCacheImage(`${apiBase}/trench-books/${selected}/${filename}`);
+  currentImage.src = cachedURL;
   currentImage.alt = filename;
 
   // Update slider position
