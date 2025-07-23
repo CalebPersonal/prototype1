@@ -40,8 +40,7 @@ function jpgFinder(obj) {
 }
 
 function trenchFinder(obj) {
-  const trenchName = obj["oc-gen:has-linked-contexts"][4]['label'] || [];
-  return trenchName;
+  return obj?.["oc-gen:has-linked-contexts"]?.[4]?.label || null;
 }
 
 function coordinatesFinder(obj) {
@@ -144,7 +143,6 @@ async function downloadTrenchBooks(startUrl, baseDir = '.') {
         if (candidate !== url && !visitedUrls.has(candidate)) {
           nextPageUrl = candidate;
           console.log('Next page:', nextPageUrl);
-          console.log("Trying to fetch next:", candidate);
           break;
         }
       }
