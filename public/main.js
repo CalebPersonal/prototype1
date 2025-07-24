@@ -244,44 +244,6 @@ const infoAuthor = document.getElementById('infoAuthor');
 const infoDate = document.getElementById('infoDate');
 const infoCoords = document.getElementById('infoCoords');
 
-// select.addEventListener('change', async (e) => {
-//   fetch('OCdata.json')
-//     .then(response => response.json())
-//     .then(data => {
-//       const selectedLabel = select.value;
-//       const selectedBook = data[selectedLabel];
-
-//       if (selectedBook) {
-//         infoTitle.textContent = selectedBook.trenchName || '-';
-//         infoAuthor.textContent = selectedBook.author || '-';
-//         infoDate.textContent = selectedBook.date || '-';
-//         infoCoords.textContent = selectedBook.coordinates
-//           ? selectedBook.coordinates.map(roundTo5).join(', ')
-//           : '-';
-
-//         // Plot map if coordinates are available
-//         if (selectedBook.coordinates) {
-//           plotMap(selectedBook.coordinates);
-//         } else {
-//           document.getElementById('map').innerHTML = '';
-//         }
-//       } else {
-//         infoTitle.textContent = '-';
-//         infoAuthor.textContent = '-';
-//         infoDate.textContent = '-';
-//         infoCoords.textContent = '-';
-//         document.getElementById('map').innerHTML = '';
-//       }
-//     })
-//     .catch(error => {
-//       infoTitle.textContent = '-';
-//       infoAuthor.textContent = '-';
-//       infoDate.textContent = '-';
-//       infoCoords.textContent = '-';
-//       console.error('Error loading JSON:', error);
-//     });
-// });
-
 
 // --- Swipe support ---
 let touchStartX = 0;
