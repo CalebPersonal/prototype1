@@ -26,19 +26,19 @@ function roundTo5(num) {
   return Math.round(num * 100000) / 100000;
 }
 
-// Function to load and cache images
+// Initialize cache for images
 const MAX_CACHE_SIZE = 50;
 const cache = new Map();
 
+// Function to load and cache images
 function setCache(url, objectURL) {
   if (cache.size >= MAX_CACHE_SIZE) {
+    // Remove oldest item (FIFO eviction)
     const oldestKey = cache.keys().next().value;
-    console.log(`🧹 Evicting from cache: ${oldestKey}`);
-    URL.revokeObjectURL(cache.get(oldestKey)); // Free memory
+    URL.revokeObjectURL(cache.get(oldestKey)); // Free browser memory
     cache.delete(oldestKey);
   }
   cache.set(url, objectURL);
-  console.log(`📥 Cached: ${url} (total: ${cache.size})`);
 }
 loadAndCacheImage("/images/imageNotFound.jpg");
 
