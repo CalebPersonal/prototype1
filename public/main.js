@@ -27,7 +27,18 @@ function roundTo5(num) {
 }
 
 // Function to load and cache images
+const MAX_CACHE_SIZE = 50;
 const cache = new Map();
+
+function setCache(url, objectURL) {
+  if (cache.size >= MAX_CACHE_SIZE) {
+    // Remove oldest item (FIFO eviction)
+    const oldestKey = cache.keys().next().value;
+    URL.revokeObjectURL(cache.get(oldestKey)); // Free browser memory
+    cache.delete(oldestKey);
+  }
+  cache.set(url, objectURL);
+}
 loadAndCacheImage("/images/imageNotFound.jpg");
 
 async function loadAndCacheImage(url) {
@@ -40,10 +51,33 @@ async function loadAndCacheImage(url) {
 
     const blob = await res.blob();
     const objectURL = URL.createObjectURL(blob);
-    cache.set(url, objectURL);
+    setCache(url, objectURL);
     return objectURL;
   } catch (err) {
     return cache.get("/images/imageNotFound.jpg");
+  }
+}
+
+// Preload next images to improve performance when navigating forward
+// This function preloads a specified number of images after the current one
+function preloadNextImages(count = 10) {
+  for (let i = 1; i <= count; i++) {
+    const idx = (currentIndex + i) % images.length;
+    const file = images[idx];
+    const url = `${apiBase}/trench-books/${select.value}/${file}`;
+    if (!cache.has(url)) loadAndCacheImage(url);
+  }
+}
+
+
+// Preload previous images to improve performance when navigating back
+// This function preloads a specified number of images before the current one
+function preloadPreviousImages(count = 5) {
+  for (let i = 1; i <= count; i++) {
+    const idx = (currentIndex - i + images.length) % images.length;
+    const file = images[idx];
+    const url = `${apiBase}/trench-books/${select.value}/${file}`;
+    if (!cache.has(url)) loadAndCacheImage(url);
   }
 }
 
@@ -79,6 +113,11 @@ async function showImage(index) {
   if (pageCounter) {
     pageCounter.textContent = `Page ${currentIndex + 1} of ${images.length}`;
   }
+
+  // Preload next and previous images
+  preloadNextImages(10);
+  preloadPreviousImages(5);
+  
 }
 
 prevBtn.addEventListener('click', () => {
