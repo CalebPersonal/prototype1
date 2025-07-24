@@ -27,19 +27,22 @@ function roundTo5(num) {
 }
 
 // Initialize cache for images
-const MAX_CACHE_SIZE = 50;
 const cache = new Map();
 
 // Function to load and cache images
 function setCache(url, objectURL) {
-  if (cache.size >= MAX_CACHE_SIZE) {
-    // Remove oldest item (FIFO eviction)
-    const oldestKey = cache.keys().next().value;
-    URL.revokeObjectURL(cache.get(oldestKey)); // Free browser memory
-    cache.delete(oldestKey);
-  }
   cache.set(url, objectURL);
 }
+
+// Function to clear the image cache
+function clearImageCache() {
+  for (const [url, objectURL] of cache.entries()) {
+    URL.revokeObjectURL(objectURL); // Free browser memory
+  }
+  cache.clear();
+  console.log('🧹 Image cache cleared');
+}
+
 loadAndCacheImage("/images/imageNotFound.jpg");
 
 async function loadAndCacheImage(url) {
@@ -69,7 +72,6 @@ function preloadNextImages(count = 10) {
     if (!cache.has(url)) loadAndCacheImage(url);
   }
 }
-
 
 // Preload previous images to improve performance when navigating back
 // This function preloads a specified number of images before the current one
@@ -131,6 +133,7 @@ nextBtn.addEventListener('click', () => {
 
 select.addEventListener('change', async (e) => {
   const selected = e.target.value;
+  clearImageCache(); // ← Clear the previous book's images from memory
   images = [];
   currentIndex = 0;
   // Show default image when no book is selected
