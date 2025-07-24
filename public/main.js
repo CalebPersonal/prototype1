@@ -32,12 +32,13 @@ const cache = new Map();
 
 function setCache(url, objectURL) {
   if (cache.size >= MAX_CACHE_SIZE) {
-    // Remove oldest item (FIFO eviction)
     const oldestKey = cache.keys().next().value;
-    URL.revokeObjectURL(cache.get(oldestKey)); // Free browser memory
+    console.log(`🧹 Evicting from cache: ${oldestKey}`);
+    URL.revokeObjectURL(cache.get(oldestKey)); // Free memory
     cache.delete(oldestKey);
   }
   cache.set(url, objectURL);
+  console.log(`📥 Cached: ${url} (total: ${cache.size})`);
 }
 loadAndCacheImage("/images/imageNotFound.jpg");
 
