@@ -48,7 +48,7 @@ async function loadAndCacheImage(url) {
 }
 
 // Function to show an image based on the current index
-// Updates the image source and alt text, and handles slider position
+// Updates the image source and alt text, and handles slider position and page counter
 async function showImage(index) {
   let pathToImage = '/images/imageNotFound.jpg'; // Default image path
   let filename = 'imageNotFound.jpg'; // Default filename
@@ -63,8 +63,6 @@ async function showImage(index) {
 
     pathToImage = `${apiBase}/trench-books/${selected}/${filename}`;
   }
-
-
 
   // call the function to load and cache the image
   const cachedURL = await loadAndCacheImage(pathToImage);
@@ -234,7 +232,6 @@ function plotMap(coords) {
     title: 'Trench Location'
   });
 }
-
 
 
 // --- Book info display ---
