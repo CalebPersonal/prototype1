@@ -6,7 +6,8 @@
 // const apiBase = 'http://192.168.178.107:3000'; // Hotel2 IP
 // const apiBase = 'https://sweet-cobras-sit.loca.lt'; // Ngrok URL
 // const apiBase = 'https://192.168.0.54:3000'; // Portable IP
-const apiBase = 'http://3.65.1.225:3000'; // ← your new server
+// const apiBase = 'http://3.65.1.225:3000'; // ← my aws server
+const apiBase = 'http://44.213.207.207:3000'; // ← poggio-civitate-project aws server
 
 
 const select = document.getElementById('trenchBookSelect');
