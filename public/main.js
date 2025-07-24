@@ -20,6 +20,7 @@ const pageSlider = document.getElementById('pageSlider');
 
 let images = [];
 let currentIndex = 0;
+let isLoadingImage = false;
 
 // utility function to round coordinates to 5 decimal places
 function roundTo5(num) {
@@ -87,6 +88,8 @@ function preloadPreviousImages(count = 5) {
 // Function to show an image based on the current index
 // Updates the image source and alt text, and handles slider position and page counter
 async function showImage(index) {
+  if (isLoadingImage) return; // ⛔ prevent re-entry
+  isLoadingImage = true;
   let pathToImage = '/images/imageNotFound.jpg'; // Default image path
   let filename = 'imageNotFound.jpg'; // Default filename
 
@@ -121,6 +124,7 @@ async function showImage(index) {
   preloadNextImages(10);
   preloadPreviousImages(5);
   
+  isLoadingImage = false; // ✅ unlock
 }
 
 prevBtn.addEventListener('click', () => {
